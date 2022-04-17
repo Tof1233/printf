@@ -1,30 +1,37 @@
 #include <unistd.h>
+#include "main.h"
 
 /**
- * _putchar - print char with stdout
- * @ch: char to print
- * Return: Output.
+ * _putchar - writes the character c to stdout
+ * @c: The character to print
+ *
+ * Return: On success 1.
+ * On error, -1 is returned, and errno is set appropriately.
  */
-int _putchar(char ch)
+int _putchar(char c)
 {
-	static int contador;
-	static char buffer[1024];
+	return (buffer(c));
+}
 
-	if (ch == -1)
+/**
+ * buffer - Save the character in a buffer
+ * @c: Character
+ *
+ * Return: 1
+ **/
+int buffer(char c)
+{
+	static char buffering[1024];
+	static int i;
+
+	if (c == -1 || i == 1024)
 	{
-		contador = 0;
-		return (0);
+		write(1, buffering, i);
+		i = 0;
 	}
-	if (ch == -2 || contador == 1024)
-	{
-		write(1, buffer, contador);
-		contador = 0;
-	}
-	if (ch != -1 && ch != -2)
-	{
-		buffer[contador] = ch;
-		contador++;
-		return (1);
-	}
-	return (0);
+
+	if (c != -1)
+		buffering[i++] = c;
+
+	return (1);
 }
