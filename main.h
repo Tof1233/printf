@@ -11,18 +11,19 @@
 * @sym: The operator
 * @f: The function associated
 */
-struct convert
+typedef struct print
 {
-	char *sym;
+	char *c;
 	int (*f)(va_list);
-};
-typedef struct convert conver_t;
+} print_f;
 
-/*Main functions*/
-int parser(const char *format, conver_t f_list[], va_list arg_list);
+int _putchar(char c);
 int _printf(const char *format, ...);
-int print_char(va_list); 
-int print_string(va_list); 
-int print_percent(va_list); 
+int (*get_option(const char *format))(va_list);
+int print_c(va_list c);
+int print_s(va_list s);
+int print_d(va_list d);
+int print_i(va_list i);
+int print_binary(va_list b);
 
 #endif

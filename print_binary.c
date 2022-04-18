@@ -1,37 +1,42 @@
+#include <stdarg.h>
 #include "main.h"
 
 /**
- * print_binary - converts an unsigned int to binary
- * @num: int to be converted
- *
- * Return: no of resulting binary characters
- */
-int print_binary(unsigned int num)
-{
-	int chars_printed = 0, idx = 0;
-	char bin[sizeof(unsigned int) * 8];
+* print_binary - The unsigned int argument is converted to binary
+* @b: argument variadic function
+*
+* Return: stored values
+*/
 
-	if (num == 0)
+int print_binary(va_list b)
+{
+
+	int i, j = 0;
+	unsigned int n;
+	unsigned int bin[1000];
+
+	n = va_arg(b, unsigned int);
+	if (n == 0)
 	{
-		chars_printed += _putchar('0');
-		return (chars_printed);
+		_putchar('0');
+		j++;
 	}
-	if (num == 1)
+	else
 	{
-		chars_printed += _putchar('1');
-		return (chars_printed);
+		i = 0;
+		while (n > 0)
+		{
+			bin[i] = n % 2;
+			n = n / 2;
+			i++;
+		}
+		i = i - 1;
+		while (i >= 0)
+		{
+			_putchar(bin[i] + '0');
+			i--;
+			j++;
+		}
 	}
-	while (num > 0)
-	{
-		bin[idx] = '0' + (num % 2);
-		num = num / 2;
-		idx++;
-	}
-	idx--;
-	while (idx >= 0)
-	{
-		chars_printed += _putchar(bin[idx]);
-		idx--;
-	}
-	return (chars_printed);
+	return (j - 2);
 }
