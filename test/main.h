@@ -1,37 +1,28 @@
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef PRINT_F
+#define PRINT_F
 
-#include <stdarg.h>
-#include <stddef.h>
+#include <unistd.h>
 #include <stdlib.h>
+#include <stdarg.h>
 
 /**
- * struct structprint - structure containing
- * @q: the location and method to translate data to characters.
- * @u: print function for specific type.
- *
- * Return: int
- */
-typedef struct structprint
+* struct convert - defines a structure for symbols and functions
+*
+* @sym: The operator
+* @f: The function associated
+*/
+struct convert
 {
-	char *q;
-	int (*u)(char *format, va_list);
-} structype;
+	char *sym;
+	int (*f)(va_list);
+};
+typedef struct convert conver_t;
 
-int _putchar(char ch);
-int _puts(char *string);
-int printc(char *format, va_list);
-int printstr(char *format, va_list);
-int (*driver(char *format))(char *format, va_list);
-int _printf(char *format, ...);
-int printint(char *format, va_list pa);
-int integer(int number);
-int contadordigit(int number);
-int _abs(int number);
-int printpercent(char *format, va_list pa);
-int printhex(char *format, va_list);
-int printHEX(char *format, va_list);
-int printocta(char *format, va_list);
-int print_unsign(char *format, va_list);
+/*Main functions*/
+int parser(const char *format, conver_t f_list[], va_list arg_list);
+int _printf(const char *format, ...);
+int print_char(va_list); 
+int print_string(va_list); 
+int print_percent(va_list); 
+
 #endif
-/* END OF MAIN_H*/
