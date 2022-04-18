@@ -1,8 +1,28 @@
-#include<stdio.h> 
-#include<stdarg.h> 
+#ifndef PRINT_F
+#define PRINT_F
 
-char* convert(unsigned int, int);       //Convert integer number into octal, hex, etc.
-int _printf(const char *format, ...);   ////Our printf function
-/* write_funcs */
-int _putchar(char c);
-int _puts(char *str);
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdarg.h>
+
+/**
+* struct convert - defines a structure for symbols and functions
+*
+* @sym: The operator
+* @f: The function associated
+*/
+struct convert
+{
+	char *sym;
+	int (*f)(va_list);
+};
+typedef struct convert conver_t;
+
+/*Main functions*/
+int parser(const char *format, conver_t f_list[], va_list arg_list);
+int _printf(const char *format, ...);
+int print_char(va_list); 
+int print_string(va_list); 
+int print_percent(va_list); 
+
+#endif
