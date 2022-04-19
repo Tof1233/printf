@@ -1,73 +1,92 @@
 #include "main.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 /**
- * _printf - prints formatted data to stdout
- * @format: string that contains the format to print
- * Return: number of characters written
+ * printIdentifiers - prints special characters
+ * @next: character after the %
+ * @arg: argument for the indentifier
+ * Return: the number of characters printed
+ * (excluding the null byte used to end output to strings)
  */
+
+int printIdentifiers(char next, va_list arg)
+{
+	int functsIndex;
+
+	identifierStruct functs[] = {
+		{"c", print_char},
+		{"s", print_str},
+		{"d", print_int},
+		{"i", print_int},
+		{"u", print_unsigned},
+		{"b", print_unsignedToBinary},
+		{"o", print_oct},
+		{"x", print_hex},
+		{"X", print_HEX},
+		{"S", print_STR},
+		{NULL, NULL}
+	};
+
+	for (functsIndex = 0; functs[functsIndex].indentifier != NULL; functsIndex++)
+	{
+		if (functs[functsIndex].indentifier[0] == next)
+			return (functs[functsIndex].printer(arg));
+	}
+	return (0);
+}
+
+/**
+ * _printf - mimic printf from stdio
+ * Description: produces output according to a format
+ * write output to stdout, the standard output stream
+ * @format: character string composed of zero or more directives
+ *
+ * Return: the number of characters printed
+ * (excluding the null byte used to end output to strings)
+ * return -1 for incomplete identifier error
+ */
+
 int _printf(const char *format, ...)
 {
-	va_list ap;
-	int i = 0, len = 0, k, j, counter = 0;	
-	char *dest = NULL;
-	char *argStr;
-	
-	while (format[len] != '\0')
-		len++;
+	unsigned int i;
+	int identifierPrinted = 0, charPrinted = 0;
+	va_list arg;
 
-	dest = malloc(sizeof(char) * len);
-	if (dest == NULL)
-		exit(1);
+	va_start(arg, format);
+	if (format == NULL)
+		return (-1);
 
-	va_start(ap, format);
-	while (format[i] != '\0')
+	for (i = 0; format[i] != '\0'; i++)
 	{
-		if (format[i] == '%' && format[i + 1] == 'c')
+		if (format[i] != '%')
 		{
-			argStr = malloc(sizeof(char) * 2);
-			argStr[0] = (char)va_arg(ap, int);
-			argStr[1] = '\0';
-			_count(&counter, argStr);
-			_sprintf(argStr);
-			free(argStr);
-			i += 2;
+			_putchar(format[i]);
+			charPrinted++;
+			continue;
 		}
-		else if (format[i] == '%' && format[i + 1] == '%')
+		if (format[i + 1] == '%')
 		{
-			argStr = malloc(sizeof(char) * 2);
-			argStr[0] = '%';
-			argStr[1] = '\0';
-			_count(&counter, argStr);
-			_sprintf(argStr);
-			free(argStr);
-			i += 2;
+			_putchar('%');
+			charPrinted++;
+			i++;
+			continue;
 		}
-		else if (format[i] == '%' && format[i + 1] == 's')
+		if (format[i + 1] == '\0')
+			return (-1);
+
+		identifierPrinted = printIdentifiers(format[i + 1], arg);
+		if (identifierPrinted == -1 || identifierPrinted != 0)
+			i++;
+		if (identifierPrinted > 0)
+			charPrinted += identifierPrinted;
+
+		if (identifierPrinted == 0)
 		{
-			argStr = va_arg(ap, char *);
-            		_count(&counter, argStr);
-            		_sprintf(argStr);
-            		i += 2;
-		}
-		else
-		{
-			for (j = i, k = 0; format[j] != '\0' ; k++, j++, i++)
-			{
-				if (format[j] == '%')
-				{
-					i = j;
-					break;
-				}
-				else
-				{
-					dest[k] = format[j];
-				}
-			}
-			dest[k] = '\0';
-			_count(&counter, dest);
-			_sprintf(dest);
+			_putchar('%');
+			charPrinted++;
 		}
 	}
-
-	return (counter);
+	va_end(arg);
+	return (charPrinted);
 }
