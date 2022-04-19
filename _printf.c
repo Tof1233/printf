@@ -1,83 +1,73 @@
-#include <unistd.h>
 #include "main.h"
-#include <stdio.h>
 
 /**
- * buffer_print - print given buffer to stdout
- * @buffer: buffer to print
- * @nbytes: number of bytes to print
- *
- * Return: nbytes
- */
-int buffer_print(char buffer[], unsigned int nbytes)
-{
-	write(1, buffer, nbytes);
-	return (nbytes);
-}
-
-/**
- * buffer_add - adds a string to buffer
- * @buffer: buffer to fill
- * @str: str to add
- * @buffer_pos: pointer to buffer first empty position
- *
- * Return: if buffer filled and emptyed return number of printed char
- * else 0
- */
-int buffer_add(char buffer[], char *str, unsigned int *buffer_pos)
-{
-	int i = 0;
-	unsigned int count = 0, pos = *buffer_pos, size = BUFFER_SIZE;
-
-	while (str && str[i])
-	{
-		if (pos == size)
-		{
-			count += buffer_print(buffer, pos);
-			pos = 0;
-		}
-		buffer[pos++] = str[i++];
-	}
-	*buffer_pos = pos;
-	return (count);
-}
-
-/**
- * _printf - produces output according to a format
- * @format: character string
- *
- * Return: the number of characters printed excluding the null byte
- * used to end output to strings
+ * _printf - prints formatted data to stdout
+ * @format: string that contains the format to print
+ * Return: number of characters written
  */
 int _printf(const char *format, ...)
 {
 	va_list ap;
-	unsigned int i = 0, buffer_pos = 0, count = 0;
-	char *res_str, *aux, buffer[BUFFER_SIZE];
+	int i = 0, len = 0, k, j, counter = 0;	
+	char *dest = NULL;
+	char *argStr;
+	
+	while (format[len] != '\0')
+		len++;
 
-	if (!format || !format[0])
-		return (-1);
+	dest = malloc(sizeof(char) * len);
+	if (dest == NULL)
+		exit(1);
+
 	va_start(ap, format);
-	aux = malloc(sizeof(char) * 2);
-	while (format && format[i])
+	while (format[i] != '\0')
 	{
-		if (format[i] == '%')
+		if (format[i] == '%' && format[i + 1] == 'c')
 		{
-			res_str = treat_format(format, &i, ap);
-			count += buffer_add(buffer, res_str, &buffer_pos);
-			free(res_str);
+			argStr = malloc(sizeof(char) * 2);
+			argStr[0] = (char)va_arg(ap, int);
+			argStr[1] = '\0';
+			_count(&counter, argStr);
+			_sprintf(argStr);
+			free(argStr);
+			i += 2;
+		}
+		else if (format[i] == '%' && format[i + 1] == '%')
+		{
+			argStr = malloc(sizeof(char) * 2);
+			argStr[0] = '%';
+			argStr[1] = '\0';
+			_count(&counter, argStr);
+			_sprintf(argStr);
+			free(argStr);
+			i += 2;
+		}
+		else if (format[i] == '%' && format[i + 1] == 's')
+		{
+			argStr = va_arg(ap, char *);
+            		_count(&counter, argStr);
+            		_sprintf(argStr);
+            		i += 2;
 		}
 		else
 		{
-			aux[0] = format[i++];
-			aux[1] = '\0';
-			count += buffer_add(buffer, aux, &buffer_pos);
+			for (j = i, k = 0; format[j] != '\0' ; k++, j++, i++)
+			{
+				if (format[j] == '%')
+				{
+					i = j;
+					break;
+				}
+				else
+				{
+					dest[k] = format[j];
+				}
+			}
+			dest[k] = '\0';
+			_count(&counter, dest);
+			_sprintf(dest);
 		}
 	}
-	count += buffer_print(buffer, buffer_pos);
-	free(aux);
-	va_end(ap);
-	if (!count)
-		count = -1;
-	return (count);
+
+	return (counter);
 }
