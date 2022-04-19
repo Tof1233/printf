@@ -40,6 +40,7 @@ int main(void)
 	_printf("Len:[%d]\n", len);
 	printf("Len:[%d]\n", len2);
 	_printf("Unknown:[%r]\n");
+	//printf("Unknown:[%r]\n");
 	_printf("%d + %d = %d\n", INT_MIN, INT_MAX, (INT_MIN + INT_MAX));
 	printf("%i\n", _printf("%b\n", -10));
 	_printf("There is %b bytes in %b KB\n", 1024, 1);
