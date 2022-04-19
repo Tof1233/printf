@@ -1,45 +1,83 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h> 
+#include <unistd.h>
 #include "main.h"
+#include <stdio.h>
 
-int _printf(const char * str, ...)
+/**
+ * buffer_print - print given buffer to stdout
+ * @buffer: buffer to print
+ * @nbytes: number of bytes to print
+ *
+ * Return: nbytes
+ */
+int buffer_print(char buffer[], unsigned int nbytes)
 {
-	va_list vl;
-	int i = 0, j=0;
-	char buff[100]={0}, tmp[20];
-	char * str_arg;
-		  
-	va_start( vl, str );
+	write(1, buffer, nbytes);
+	return (nbytes);
+}
+
+/**
+ * buffer_add - adds a string to buffer
+ * @buffer: buffer to fill
+ * @str: str to add
+ * @buffer_pos: pointer to buffer first empty position
+ *
+ * Return: if buffer filled and emptyed return number of printed char
+ * else 0
+ */
+int buffer_add(char buffer[], char *str, unsigned int *buffer_pos)
+{
+	int i = 0;
+	unsigned int count = 0, pos = *buffer_pos, size = BUFFER_SIZE;
+
 	while (str && str[i])
 	{
-		if(str[i] == '%'){
-			i++;
-			switch (str[i]) {
-				/* Convert char */
-				case 'c': {
-					buff[j] = (char)va_arg( vl, int );
-					j++;
-					break;
-					  }
-				
-				/* copy string */
-				case 's': {
-					str_arg = va_arg( vl, char* );
-					strcpy(&buff[j], str_arg);
-					j += strlen(str_arg);
-					break;
-					  }
-			}
+		if (pos == size)
+		{
+			count += buffer_print(buffer, pos);
+			pos = 0;
 		}
-		else {
-			buff[j] =str[i];
-			j++;
-		}
-		i++;
+		buffer[pos++] = str[i++];
 	}
-	fwrite(buff, j, 1, stdout);
-	va_end(vl);
-	return j;
+	*buffer_pos = pos;
+	return (count);
+}
+
+/**
+ * _printf - produces output according to a format
+ * @format: character string
+ *
+ * Return: the number of characters printed excluding the null byte
+ * used to end output to strings
+ */
+int _printf(const char *format, ...)
+{
+	va_list ap;
+	unsigned int i = 0, buffer_pos = 0, count = 0;
+	char *res_str, *aux, buffer[BUFFER_SIZE];
+
+	if (!format || !format[0])
+		return (-1);
+	va_start(ap, format);
+	aux = malloc(sizeof(char) * 2);
+	while (format && format[i])
+	{
+		if (format[i] == '%')
+		{
+			res_str = treat_format(format, &i, ap);
+			count += buffer_add(buffer, res_str, &buffer_pos);
+			free(res_str);
+		}
+		else
+		{
+			aux[0] = format[i++];
+			aux[1] = '\0';
+			count += buffer_add(buffer, aux, &buffer_pos);
+		}
+	}
+	count += buffer_print(buffer, buffer_pos);
+	free(aux);
+	va_end(ap);
+	if (!count)
+		count = -1;
+	return (count);
 }
