@@ -37,7 +37,6 @@ char is_non_custom_specifier(char c)
 	case 'u':
 	case 'X':
 	case 'x':
-	case 'I':
 		return (TRUE);
 	default:
 		return (FALSE);
@@ -106,7 +105,7 @@ char is_length(char c)
 	{
 	case 'h':
 	case 'l':
-	case '.':
+	case 'I':
 		
 		return (TRUE);
 	default:
