@@ -59,7 +59,7 @@ void set_format_error(const char *format, int *pos, int len,
 	char next_char = format[*pos + len + 1];
 	int i;
 
-	if (last_token == 1 && next_char == '\0')
+	if (last_token == 1 && next_char == '\0' || next_char == '.')
 	{
 		*error = -1;
 	}
