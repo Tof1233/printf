@@ -106,6 +106,8 @@ char is_length(char c)
 	{
 	case 'h':
 	case 'l':
+	case '.':
+		
 		return (TRUE);
 	default:
 		return (FALSE);
