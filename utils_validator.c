@@ -65,7 +65,6 @@ char is_specifier(char c)
 		case 'R':
 		case 'r':
 		case 'S':
-		case 'I':
 			return (TRUE);
 		default:
 			return (FALSE);
@@ -89,6 +88,7 @@ char is_flag(char c)
 	case ' ':
 	case '#':
 	case '0':
+	case 'I':
 		return (TRUE);
 	default:
 		return (FALSE);
