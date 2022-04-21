@@ -37,6 +37,7 @@ char is_non_custom_specifier(char c)
 	case 'u':
 	case 'X':
 	case 'x':
+	case 'I':
 		return (TRUE);
 	default:
 		return (FALSE);
@@ -87,7 +88,6 @@ char is_flag(char c)
 	case ' ':
 	case '#':
 	case '0':
-	case 'I':
 		return (TRUE);
 	default:
 		return (FALSE);
