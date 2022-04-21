@@ -83,7 +83,7 @@ char is_flag(char c)
 	{
 	case '-':
 	case '+':
-	case '\'':
+	case '\':
 	case ' ':
 	case '#':
 	case '0':
