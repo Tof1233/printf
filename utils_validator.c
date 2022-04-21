@@ -37,7 +37,6 @@ char is_non_custom_specifier(char c)
 	case 'u':
 	case 'X':
 	case 'x':
-	case '.':
 		return (TRUE);
 	default:
 		return (FALSE);
