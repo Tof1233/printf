@@ -87,7 +87,6 @@ char is_flag(char c)
 	case ' ':
 	case '#':
 	case '0':
-	case '\.':
 		return (TRUE);
 	default:
 		return (FALSE);
