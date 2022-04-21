@@ -65,6 +65,7 @@ char is_specifier(char c)
 		case 'R':
 		case 'r':
 		case 'S':
+		case 'I':
 			return (TRUE);
 		default:
 			return (FALSE);
